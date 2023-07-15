@@ -11,7 +11,7 @@ function OperationButton(props) {
         <>
             <button {...props} onClick={e => {
                 // When an operation button (with values "+", "-", "/", "*", or "=") is clicked 
-
+                
                 if (isNewEntryExpected) { // right after "+", "-", "/", "*", or "=" is clicked
                     if (e.target.value === '=') {
                         if (typeof lastElement === 'number') {
@@ -85,7 +85,6 @@ function OperationButton(props) {
                         } else if (["+", "-", "/", "*"].includes(lastElement)){ // consecutive operations
                             newOpsArray.push(currEntryFloat);
                             setOpsArray(newOpsArray);
-                            console.log(newOpsArray);
                             let result = calculateResult(newOpsArray); // calculate the result
                             
                             setCurrEntry(result.toString());        // show it as the entry
@@ -100,7 +99,6 @@ function OperationButton(props) {
                         }
                     }
                 }
-
                 setNewEntryExpected(true);
 
             }}>{props.children}</button>    
@@ -110,60 +108,62 @@ function OperationButton(props) {
 
 function calculateResult(opsArray) {
     let revPolish = toReversePolishNotation(opsArray);
-    let tempStack = [];
+    let operatorStack = [];
 
     for (let i = 0; i < revPolish.length; i++) {
         const element = revPolish[i];
         
         if (typeof element === 'number') {
-            tempStack.push(element);
+            operatorStack.push(element);
             continue;
         } else {
-            let first = tempStack.pop();
-            let second = tempStack.pop();
+            let first = operatorStack.pop();
+            let second = operatorStack.pop();
             if (element === '+') {
-                tempStack.push(second + first);
+                operatorStack.push(second + first);
             } else if (element === '-') {
-                tempStack.push(second - first);
+                operatorStack.push(second - first);
             } else if (element === '*') {
-                tempStack.push(second * first);
+                operatorStack.push(second * first);
             } else if (element === '/') {
-                tempStack.push(second / first);
+                operatorStack.push(second / first);
             }
         }
     }
-    return tempStack.pop();
+    return operatorStack.pop();
 }
 
-function toReversePolishNotation(array) {
-    let finalQueue = [];
-    let tempStack = [];
-    tempStack.peek = () => { return tempStack[tempStack.length-1] };
+export function toReversePolishNotation(array) {
+    let finalOutputQueue = [];
+    let operatorStack = [];
+    operatorStack.peek = () => { return operatorStack[operatorStack.length-1] };
 
     for (let i = 0; i < array.length; i++) {
         const element = array[i];
 
         if (typeof element === 'number') {
-            finalQueue.push(element);
+            finalOutputQueue.push(element);
             continue;
         } else if (element === '+' || element === '-') {
-            if (tempStack.peek() === '/' || tempStack.peek() === '*') {
-                finalQueue.push(tempStack.pop());
-                tempStack.push(element);
+            if (operatorStack.peek() === '/' || operatorStack.peek() === '*') {
+                while (operatorStack.length > 0) {
+                    finalOutputQueue.push(operatorStack.pop());
+                }
+                operatorStack.push(element);
                 continue;
             } else {
-                tempStack.push(element);
+                operatorStack.push(element);
             }
         } else if (element === '=') {
             continue;
         } else {
-            tempStack.push(element);
+            operatorStack.push(element);
         }
     }
-    while (tempStack.length !== 0) {
-        finalQueue.push(tempStack.pop());
+    while (operatorStack.length !== 0) {
+        finalOutputQueue.push(operatorStack.pop());
     }
-    return finalQueue;
+    return finalOutputQueue;
 }
 
 export default OperationButton;
