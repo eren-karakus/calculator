@@ -32,7 +32,7 @@ function Calculator(props){
           <OperationButton value="*" className="btn operator">x</OperationButton>
 
           <button className="btn" onClick={() => {
-                          if (currEntry != 0) {
+                          if (/^-?\d+(\.\d+)?$/.test(currEntry)) {
                             currEntry.includes("-") ? setCurrEntry(currEntry.slice(1)) : setCurrEntry("-" + currEntry)} 
                           }}>+/-</button>
           <NumberButton value="0" className="btn">0</NumberButton>
