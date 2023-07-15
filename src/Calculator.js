@@ -31,7 +31,10 @@ function Calculator(props){
           <NumberButton value="3" className="btn">3</NumberButton>
           <OperationButton value="*" className="btn operator">x</OperationButton>
 
-          <button className="btn" onClick={() => currEntry.includes("-") ? setCurrEntry(currEntry.slice(1)) : setCurrEntry("-" + currEntry) }>+/-</button>
+          <button className="btn" onClick={() => {
+                          if (currEntry != 0) {
+                            currEntry.includes("-") ? setCurrEntry(currEntry.slice(1)) : setCurrEntry("-" + currEntry)} 
+                          }}>+/-</button>
           <NumberButton value="0" className="btn">0</NumberButton>
           <button className="btn" onClick={() => {
                           if (isNewEntryExpected) {
